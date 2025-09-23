@@ -4,7 +4,7 @@ export interface Product {
   name: string;
   full_name: string;
   description?: string;
-  brand: 'forza_bond' | 'forza_seal' | 'forza_tape';
+  brand: 'forza_bond' | 'forza_seal' | 'forza_tape' | 'forza_industrial' | 'forza_transportation' | 'forza_uniform';
   industry: string;
   chemistry?: string;
   url?: string;

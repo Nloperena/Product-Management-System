@@ -39,11 +39,35 @@ def get_all_products_flat():
         if brand_key == 'metadata':
             continue
             
+        if 'products' not in brand_data:
+            continue
+            
         for industry_key, industry_data in brand_data['products'].items():
+            if 'products' not in industry_data:
+                continue
+                
             for product in industry_data['products']:
-                product['brand'] = brand_key
-                product['industry'] = industry_key
-                all_products.append(product)
+                # Create a normalized product structure for frontend compatibility
+                normalized_product = {
+                    'product_id': product.get('product_id', ''),
+                    'id': product.get('product_id', ''),  # For backward compatibility
+                    'name': product.get('name', ''),
+                    'full_name': product.get('name', ''),  # Use name as full_name if not provided
+                    'description': product.get('description', ''),
+                    'brand': brand_key,
+                    'industry': industry_key,
+                    'chemistry': product.get('chemistry', ''),
+                    'url': product.get('url', ''),
+                    'image': product.get('image_url', product.get('image', '')),
+                    'benefits': product.get('benefits', []),
+                    'applications': product.get('applications', []),
+                    'technical': product.get('technical', []),
+                    'sizing': product.get('sizing', {}),
+                    'packaging': product.get('packaging', []),
+                    'published': isinstance(product.get('published'), str) or product.get('published', True),  # Convert date string to boolean
+                    'benefits_count': len(product.get('benefits', []))
+                }
+                all_products.append(normalized_product)
     
     return all_products
 

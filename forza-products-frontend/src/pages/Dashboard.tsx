@@ -75,11 +75,20 @@ export const Dashboard: React.FC = () => {
       return acc;
     }, {} as Record<string, number>);
 
-    return [
-      { name: 'ForzaBOND®', count: brandCounts.forza_bond || 0, color: 'bg-blue-500' },
-      { name: 'ForzaSEAL®', count: brandCounts.forza_seal || 0, color: 'bg-green-500' },
-      { name: 'ForzaTAPE®', count: brandCounts.forza_tape || 0, color: 'bg-purple-500' },
-    ];
+    const brandMapping = {
+      'forza_bond': { name: 'ForzaBOND®', color: 'bg-blue-500' },
+      'forza_seal': { name: 'ForzaSEAL®', color: 'bg-green-500' },
+      'forza_tape': { name: 'ForzaTAPE®', color: 'bg-purple-500' },
+      'forza_industrial': { name: 'Forza Industrial', color: 'bg-orange-500' },
+      'forza_transportation': { name: 'Forza Transportation', color: 'bg-red-500' },
+      'forza_uniform': { name: 'Forza Uniform', color: 'bg-indigo-500' },
+    };
+
+    return Object.entries(brandCounts).map(([brandKey, count]) => ({
+      name: brandMapping[brandKey as keyof typeof brandMapping]?.name || brandKey,
+      count,
+      color: brandMapping[brandKey as keyof typeof brandMapping]?.color || 'bg-gray-500'
+    })).filter(brand => brand.count > 0);
   };
 
 
