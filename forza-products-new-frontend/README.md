@@ -132,3 +132,5 @@ The frontend connects to the existing Flask backend API endpoints:
 - All components are built from scratch with modern React patterns
 - The design focuses on usability and professional appearance
 - The codebase follows TypeScript best practices for maintainability
+
+Deployment: trigger rebuild 2025-09-23T18:32:31.4125920-04:00
