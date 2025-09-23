@@ -1,0 +1,91 @@
+{
+  "forza_products_organized": {
+    "metadata": {
+      "total_products": 12,
+      "last_updated": "2025-09-23",
+      "version": "1.0"
+    },
+    "forza_industrial": {
+      "products": {
+        "cleaning": {
+          "products": [
+            {
+              "product_id": "FI-CLEAN-001",
+              "name": "Industrial Degreaser",
+              "chemistry": "Alkaline",
+              "applications": ["Heavy Equipment", "Machinery", "Parts Cleaning"],
+              "benefits": ["Heavy-duty cleaning", "Oil and grease removal", "Safe for metals"],
+              "published": "2024-01-15",
+              "image_url": "/placeholder-product.png"
+            },
+            {
+              "product_id": "FI-CLEAN-002", 
+              "name": "Multi-Purpose Cleaner",
+              "chemistry": "Neutral pH",
+              "applications": ["General Cleaning", "Surfaces", "Equipment"],
+              "benefits": ["Versatile cleaning", "Safe on most surfaces", "Non-toxic"],
+              "published": "2024-02-01",
+              "image_url": "/placeholder-product.png"
+            }
+          ]
+        },
+        "transportation": {
+          "products": [
+            {
+              "product_id": "FI-TRANS-001",
+              "name": "Fleet Wash Solution",
+              "chemistry": "High pH",
+              "applications": ["Vehicle Washing", "Fleet Maintenance", "Heavy Duty Cleaning"],
+              "benefits": ["Removes road grime", "Long-lasting protection", "Cost-effective"],
+              "published": "2024-01-20",
+              "image_url": "/placeholder-product.png"
+            }
+          ]
+        }
+      }
+    },
+    "forza_transportation": {
+      "products": {
+        "fleet": {
+          "products": [
+            {
+              "product_id": "FT-FLEET-001",
+              "name": "Professional Fleet Cleaner",
+              "chemistry": "Specialized Formula",
+              "applications": ["Trucks", "Buses", "Commercial Vehicles"],
+              "benefits": ["Professional results", "Time-saving", "Equipment-friendly"],
+              "published": "2024-03-01",
+              "image_url": "/placeholder-product.png"
+            },
+            {
+              "product_id": "FT-FLEET-002",
+              "name": "Heavy Duty Vehicle Wash",
+              "chemistry": "Alkaline",
+              "applications": ["Construction Equipment", "Heavy Trucks", "Industrial Vehicles"],
+              "benefits": ["Tough on dirt", "Gentle on paint", "Biodegradable"],
+              "published": "2024-03-15",
+              "image_url": "/placeholder-product.png"
+            }
+          ]
+        }
+      }
+    },
+    "forza_uniform": {
+      "products": {
+        "textiles": {
+          "products": [
+            {
+              "product_id": "FU-TEXT-001",
+              "name": "Textile Care Solution",
+              "chemistry": "pH Balanced",
+              "applications": ["Uniforms", "Work Clothing", "Industrial Textiles"],
+              "benefits": ["Effective cleaning", "Fabric protection", "Odor elimination"],
+              "published": "2024-04-01",
+              "image_url": "/placeholder-product.png"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
