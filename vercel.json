@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd forza-products-new-frontend && npm install && npm run build",
+  "buildCommand": "cd forza-products-new-frontend && npm run build",
   "outputDirectory": "forza-products-new-frontend/dist",
-  "installCommand": null,
+  "installCommand": "cd forza-products-new-frontend && npm ci",
   "framework": null,
   "rewrites": [
     {
