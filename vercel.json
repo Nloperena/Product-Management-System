@@ -1,17 +1,13 @@
 {
-  "builds": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd forza-products-new-frontend && npm install && npm run build",
+  "outputDirectory": "forza-products-new-frontend/dist",
+  "installCommand": null,
+  "framework": null,
+  "rewrites": [
     {
-      "src": "forza-products-frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
