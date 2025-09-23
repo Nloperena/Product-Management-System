@@ -7,6 +7,7 @@ A comprehensive web interface for managing product information, images, and bene
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, send_from_directory
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 
@@ -48,9 +49,25 @@ def get_all_products_flat():
                 
             for product in industry_data['products']:
                 # Create a normalized product structure for frontend compatibility
+                # Extract product ID from name (e.g., "ForzaBOND® 81-0389 – ..." -> "81-0389")
+                product_name = product.get('name', '')
+                product_id = ''
+                if product_name:
+                    # Try to extract product ID from various patterns
+                    # Pattern 1: Find product codes like "81-0389", "CA1000", "A450", etc.
+                    match = re.search(r'([A-Z0-9]+[-]?[A-Z0-9]+)', product_name)
+                    if match:
+                        product_id = match.group(1)
+                    else:
+                        # Fallback: use a cleaned version of the name
+                        product_id = re.sub(r'[^\w\-]', '', product_name.split('–')[0].split('-')[0].strip())
+                        product_id = product_id.replace('ForzaBOND', '').replace('ForzaSEAL', '').replace('ForzaTAPE', '').strip()
+                        if not product_id:
+                            product_id = product_name[:20]  # Use first 20 chars as fallback
+                
                 normalized_product = {
-                    'product_id': product.get('product_id', ''),
-                    'id': product.get('product_id', ''),  # For backward compatibility
+                    'product_id': product_id,
+                    'id': product_id,  # For backward compatibility
                     'name': product.get('name', ''),
                     'full_name': product.get('name', ''),  # Use name as full_name if not provided
                     'description': product.get('description', ''),
@@ -147,6 +164,17 @@ def api_get_products():
     """API endpoint to get all products."""
     products_list = get_all_products_flat()
     return jsonify(products_list)
+
+@app.route('/api/product/<product_identifier>', methods=['GET'])
+def api_get_product(product_identifier):
+    """API endpoint to get a single product by ID."""
+    try:
+        product = find_product_by_identifier(product_identifier)
+        if not product:
+            return jsonify({"error": "Product not found"}), 404
+        return jsonify(product)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/product/<product_identifier>', methods=['PUT'])
 def api_update_product(product_identifier):

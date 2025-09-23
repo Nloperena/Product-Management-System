@@ -79,6 +79,29 @@ export class ApiService {
     return this.request<string[]>('/api/images');
   }
 
+  static async createProduct(product: Product): Promise<Product> {
+    console.log('➕ createProduct: Creating new product', product.product_id);
+    return this.request<Product>('/api/products', {
+      method: 'POST',
+      body: JSON.stringify(product),
+    });
+  }
+
+  static async updateProduct(id: string, product: Product): Promise<Product> {
+    console.log('✏️ updateProduct: Updating product', id);
+    return this.request<Product>(`/api/products/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(product),
+    });
+  }
+
+  static async deleteProduct(id: string): Promise<void> {
+    console.log('🗑️ deleteProduct: Deleting product', id);
+    return this.request<void>(`/api/products/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   static getProductImageUrl(imagePath: string): string {
     if (!imagePath) {
       console.log('🖼️ getProductImageUrl: No image path provided, using placeholder');

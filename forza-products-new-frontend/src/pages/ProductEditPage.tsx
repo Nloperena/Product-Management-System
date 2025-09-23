@@ -1,0 +1,764 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useProduct } from '@/hooks/useProducts';
+import { productApi } from '@/services/api';
+import { useToast } from '@/components/ui/ToastContainer';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { getImageUrl } from '@/utils/formatting';
+import { 
+  ArrowLeft, 
+  Save, 
+  Plus, 
+  Trash2, 
+  Upload,
+  Package,
+  Loader2,
+  AlertTriangle,
+  CheckCircle,
+  X
+} from 'lucide-react';
+import type { ProductFormData } from '@/types/product';
+
+const ProductEditPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
+  const isNewProduct = id === 'new';
+  const { product, loading, error } = useProduct(isNewProduct ? '' : id || '');
+  
+  const [formData, setFormData] = useState<ProductFormData>({
+    product_id: '',
+    full_name: '',
+    description: '',
+    url: '',
+    brand: 'forza_bond',
+    industry: 'industrial_industry',
+    chemistry: '',
+    image: '',
+    published: false,
+    benefits: [],
+    applications: [],
+    technical: [],
+  });
+
+  const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [availableImages, setAvailableImages] = useState<Array<{ filename: string; path: string }>>([]);
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  // Brand and industry options
+  const brands = [
+    { value: 'forza_bond', label: 'Bond' },
+    { value: 'forza_seal', label: 'Seal' },
+    { value: 'forza_tape', label: 'Tape' },
+  ];
+
+  const industries = [
+    { value: 'industrial_industry', label: 'Industrial' },
+    { value: 'construction_industry', label: 'Construction' },
+    { value: 'marine_industry', label: 'Marine' },
+    { value: 'transportation_industry', label: 'Transportation' },
+    { value: 'composites_industry', label: 'Composites' },
+    { value: 'insulation_industry', label: 'Insulation' },
+  ];
+
+  // Load product data when component mounts
+  useEffect(() => {
+    if (!isNewProduct && product) {
+      setFormData({
+        product_id: product.product_id || product.id,
+        full_name: product.full_name || product.name,
+        description: product.description || '',
+        url: product.url || '',
+        brand: product.brand,
+        industry: product.industry,
+        chemistry: product.chemistry || '',
+        image: product.image || '',
+        published: product.published,
+        benefits: [...product.benefits],
+        applications: [...product.applications],
+        technical: [...product.technical],
+      });
+    }
+  }, [product, isNewProduct]);
+
+  // Load available images
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const images = await productApi.getImages();
+        setAvailableImages(images);
+      } catch (error) {
+        console.error('Failed to load images:', error);
+      }
+    };
+    loadImages();
+  }, []);
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    if (!formData.product_id.trim()) {
+      errors.product_id = 'Product ID is required';
+    }
+
+    if (!formData.full_name.trim()) {
+      errors.full_name = 'Product name is required';
+    }
+
+    if (!formData.brand) {
+      errors.brand = 'Brand is required';
+    }
+
+    if (!formData.industry) {
+      errors.industry = 'Industry is required';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInputChange = (field: keyof ProductFormData, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleArrayAdd = (field: 'benefits' | 'applications') => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: [...prev[field], '']
+    }));
+  };
+
+  const handleArrayUpdate = (field: 'benefits' | 'applications', index: number, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: prev[field].map((item, i) => i === index ? value : item)
+    }));
+  };
+
+  const handleArrayRemove = (field: 'benefits' | 'applications', index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: prev[field].filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleTechnicalAdd = () => {
+    setFormData(prev => ({
+      ...prev,
+      technical: [...prev.technical, { property: '', value: '' }]
+    }));
+  };
+
+  const handleTechnicalUpdate = (index: number, field: 'property' | 'value', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      technical: prev.technical.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const handleTechnicalRemove = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      technical: prev.technical.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingImage(true);
+      const result = await productApi.uploadImage(file);
+      if (result.success && result.filename) {
+        handleInputChange('image', result.filename);
+        // Refresh available images
+        const images = await productApi.getImages();
+        setAvailableImages(images);
+      }
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      showError('Upload Failed', 'Failed to upload image. Please try again.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      setSaving(true);
+      
+      if (isNewProduct) {
+        const result = await productApi.createProduct(formData);
+        if (result.success && result.product_id) {
+          showSuccess('Product Created', `"${formData.full_name}" has been created successfully!`);
+          navigate(`/products/${result.product_id}`);
+        }
+      } else {
+        await productApi.updateProduct(id!, formData);
+        showSuccess('Product Updated', `"${formData.full_name}" has been updated successfully!`);
+        navigate(`/products/${id}`);
+      }
+    } catch (error) {
+      console.error('Failed to save product:', error);
+      showError('Save Failed', 'Failed to save product. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading && !isNewProduct) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-primary-600" />
+          <span className="text-lg text-gray-600">Loading product...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !isNewProduct) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Product Not Found</h2>
+        <p className="text-gray-600 mb-6">{error}</p>
+        <Link to="/products">
+          <Button variant="outline" className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Products
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const imageUrl = getImageUrl(formData.image);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link to={isNewProduct ? "/products" : `/products/${id}`}>
+            <Button variant="outline" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              {isNewProduct ? 'Back to Products' : 'Back to Product'}
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              {isNewProduct ? 'Create New Product' : `Edit ${product?.full_name || product?.name}`}
+            </h1>
+            <p className="text-gray-600 mt-1">
+              {isNewProduct ? 'Add a new product to the catalog' : 'Update product information'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => navigate(isNewProduct ? "/products" : `/products/${id}`)}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="gap-2"
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            {saving ? 'Saving...' : 'Save Product'}
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Form */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Basic Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Basic Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Product ID *
+                  </label>
+                  <Input
+                    value={formData.product_id}
+                    onChange={(e) => handleInputChange('product_id', e.target.value)}
+                    placeholder="Enter product ID"
+                    error={validationErrors.product_id}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Status
+                  </label>
+                  <div className="flex items-center gap-4 pt-2">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        checked={!formData.published}
+                        onChange={() => handleInputChange('published', false)}
+                        className="text-primary-600"
+                      />
+                      <span className="text-sm">Draft</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        checked={formData.published}
+                        onChange={() => handleInputChange('published', true)}
+                        className="text-primary-600"
+                      />
+                      <span className="text-sm">Published</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Product Name *
+                </label>
+                <Input
+                  value={formData.full_name}
+                  onChange={(e) => handleInputChange('full_name', e.target.value)}
+                  placeholder="Enter full product name"
+                  error={validationErrors.full_name}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  placeholder="Enter product description"
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Brand *
+                  </label>
+                  <select
+                    value={formData.brand}
+                    onChange={(e) => handleInputChange('brand', e.target.value)}
+                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  >
+                    {brands.map((brand) => (
+                      <option key={brand.value} value={brand.value}>
+                        {brand.label}
+                      </option>
+                    ))}
+                  </select>
+                  {validationErrors.brand && (
+                    <p className="text-sm text-red-600 mt-1">{validationErrors.brand}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Industry *
+                  </label>
+                  <select
+                    value={formData.industry}
+                    onChange={(e) => handleInputChange('industry', e.target.value)}
+                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  >
+                    {industries.map((industry) => (
+                      <option key={industry.value} value={industry.value}>
+                        {industry.label}
+                      </option>
+                    ))}
+                  </select>
+                  {validationErrors.industry && (
+                    <p className="text-sm text-red-600 mt-1">{validationErrors.industry}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Chemistry
+                  </label>
+                  <Input
+                    value={formData.chemistry}
+                    onChange={(e) => handleInputChange('chemistry', e.target.value)}
+                    placeholder="e.g., Polyurethane"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Product URL
+                </label>
+                <Input
+                  value={formData.url}
+                  onChange={(e) => handleInputChange('url', e.target.value)}
+                  placeholder="https://forzabuilt.com/product/..."
+                  type="url"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Benefits */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Benefits ({formData.benefits.length})</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleArrayAdd('benefits')}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Benefit
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {formData.benefits.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">
+                  No benefits added yet. Click "Add Benefit" to get started.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {formData.benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Input
+                        value={benefit}
+                        onChange={(e) => handleArrayUpdate('benefits', index, e.target.value)}
+                        placeholder="Enter benefit description"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleArrayRemove('benefits', index)}
+                        className="p-2 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Applications */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Applications ({formData.applications.length})</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleArrayAdd('applications')}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Application
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {formData.applications.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">
+                  No applications added yet. Click "Add Application" to get started.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {formData.applications.map((application, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <textarea
+                        value={application}
+                        onChange={(e) => handleArrayUpdate('applications', index, e.target.value)}
+                        placeholder="Enter application description"
+                        className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        rows={2}
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleArrayRemove('applications', index)}
+                        className="p-2 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Technical Properties */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Technical Properties ({formData.technical.length})</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTechnicalAdd}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Property
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {formData.technical.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">
+                  No technical properties added yet. Click "Add Property" to get started.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {formData.technical.map((tech, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Input
+                        value={tech.property}
+                        onChange={(e) => handleTechnicalUpdate(index, 'property', e.target.value)}
+                        placeholder="Property name"
+                        className="flex-1"
+                      />
+                      <Input
+                        value={tech.value}
+                        onChange={(e) => handleTechnicalUpdate(index, 'value', e.target.value)}
+                        placeholder="Property value"
+                        className="flex-1"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTechnicalRemove(index)}
+                        className="p-2 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Product Image */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Product Image
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Current Image Preview */}
+              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                {formData.image ? (
+                  <img
+                    src={imageUrl}
+                    alt="Product"
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/placeholder-product.svg';
+                    }}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-gray-400">
+                    <Package className="h-12 w-12 mb-2" />
+                    <span className="text-sm">No Image</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Image Upload */}
+              <div className="space-y-2">
+                <label className="block">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploadingImage}
+                  />
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    disabled={uploadingImage}
+                    onClick={() => {
+                      const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+                      input?.click();
+                    }}
+                  >
+                    {uploadingImage ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Upload className="h-4 w-4" />
+                    )}
+                    {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                  </Button>
+                </label>
+
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setShowImagePicker(true)}
+                >
+                  Choose Existing Image
+                </Button>
+
+                {formData.image && (
+                  <Button
+                    variant="outline"
+                    className="w-full text-red-600 hover:bg-red-50"
+                    onClick={() => handleInputChange('image', '')}
+                  >
+                    Remove Image
+                  </Button>
+                )}
+              </div>
+
+              {formData.image && (
+                <div className="text-xs text-gray-500">
+                  Current: {formData.image}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Form Status */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Form Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Required fields</span>
+                  <div className="flex items-center gap-1">
+                    {Object.keys(validationErrors).length === 0 ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className={`text-sm ${Object.keys(validationErrors).length === 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {Object.keys(validationErrors).length === 0 ? 'Complete' : 'Missing'}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Benefits</span>
+                  <Badge variant="secondary">
+                    {formData.benefits.length}
+                  </Badge>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Applications</span>
+                  <Badge variant="secondary">
+                    {formData.applications.length}
+                  </Badge>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Technical Properties</span>
+                  <Badge variant="secondary">
+                    {formData.technical.length}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Image Picker Modal */}
+      {showImagePicker && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-4xl mx-4 max-h-[80vh] overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Choose Image</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowImagePicker(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="overflow-y-auto">
+              {availableImages.length === 0 ? (
+                <p className="text-center text-gray-500 py-8">
+                  No images available. Upload an image first.
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {availableImages.map((image) => (
+                    <button
+                      key={image.filename}
+                      onClick={() => {
+                        handleInputChange('image', image.filename);
+                        setShowImagePicker(false);
+                      }}
+                      className="group relative aspect-square bg-gray-100 rounded-lg overflow-hidden hover:ring-2 hover:ring-primary-500"
+                    >
+                      <img
+                        src={getImageUrl(image.filename)}
+                        alt={image.filename}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all" />
+                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white text-xs p-2 truncate">
+                        {image.filename}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProductEditPage;

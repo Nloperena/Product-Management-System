@@ -2,14 +2,15 @@ import React from 'react';
 import type { Product } from '../../types/product.ts';
 import { ApiService } from '../../services/api';
 import { useProductStore } from '../../store/productStore';
-import { Check, Plus, Eye } from 'lucide-react';
+import { Check, Plus, Eye, Edit } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
   onView: (product: Product) => void;
+  onEdit?: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onView }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onView, onEdit }) => {
   const { selectedProducts, toggleProductSelection } = useProductStore();
   const productId = product.product_id || product.id || '';
   const isSelected = selectedProducts.includes(productId);
@@ -21,6 +22,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onView }) => 
 
   const handleView = () => {
     onView(product);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit?.(product);
   };
 
   const getBrandColor = (brand: string) => {
@@ -71,11 +77,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onView }) => 
 
       {/* Product Info */}
       <div className="space-y-2">
-        {/* Brand Badge */}
+        {/* Brand Badge and Published Status */}
         <div className="flex items-center justify-between">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBrandColor(product.brand)}`}>
-            {getBrandDisplayName(product.brand)}
-          </span>
+          <div className="flex items-center space-x-2">
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBrandColor(product.brand)}`}>
+              {getBrandDisplayName(product.brand)}
+            </span>
+            {/* Published Status Indicator */}
+            {product.published !== undefined && (
+              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                product.published 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-orange-100 text-orange-800'
+              }`}>
+                {product.published ? 'Published' : 'Draft'}
+              </span>
+            )}
+          </div>
           <button
             onClick={handleSelect}
             className={`p-1 rounded-full transition-colors ${
@@ -114,13 +132,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onView }) => 
           <span className="text-xs text-gray-500 capitalize">
             {product.industry.replace('_', ' ')}
           </span>
-          <button
-            onClick={handleView}
-            className="flex items-center text-xs text-forza-blue hover:text-forza-blue-dark"
-          >
-            <Eye className="h-3 w-3 mr-1" />
-            View Details
-          </button>
+          <div className="flex items-center space-x-2">
+            {onEdit && (
+              <button
+                onClick={handleEdit}
+                className="flex items-center text-xs text-gray-600 hover:text-forza-blue transition-colors"
+                title="Edit Product"
+              >
+                <Edit className="h-3 w-3" />
+              </button>
+            )}
+            <button
+              onClick={handleView}
+              className="flex items-center text-xs text-forza-blue hover:text-forza-blue-dark"
+            >
+              <Eye className="h-3 w-3 mr-1" />
+              View Details
+            </button>
+          </div>
         </div>
       </div>
     </div>

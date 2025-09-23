@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Product, ProductFilters } from '../types/product.ts';
 
 interface ProductStore {
@@ -9,6 +10,8 @@ interface ProductStore {
   selectedProducts: string[];
   isLoading: boolean;
   error: string | null;
+  scrollPosition: number;
+  viewMode: 'grid' | 'list';
 
   // Actions
   setProducts: (products: Product[]) => void;
@@ -19,23 +22,29 @@ interface ProductStore {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   applyFilters: () => void;
+  setScrollPosition: (position: number) => void;
+  setViewMode: (mode: 'grid' | 'list') => void;
 }
 
-export const useProductStore = create<ProductStore>((set, get) => ({
-  products: [],
-  filteredProducts: [],
-  filters: {
-    search: '',
-    brand: '',
-    industry: '',
-    chemistry: '',
-    applications: [],
-    published: 'all',
-  },
-  searchQuery: '',
-  selectedProducts: [],
-  isLoading: false,
-  error: null,
+export const useProductStore = create<ProductStore>()(
+  persist(
+    (set, get) => ({
+      products: [],
+      filteredProducts: [],
+      filters: {
+        search: '',
+        brand: '',
+        industry: '',
+        chemistry: '',
+        applications: [],
+        published: 'all',
+      },
+      searchQuery: '',
+      selectedProducts: [],
+      isLoading: false,
+      error: null,
+      scrollPosition: 0,
+      viewMode: 'grid' as const,
 
   setProducts: (products) => {
     console.log('🏪 Store: Setting products', products.length);
@@ -134,4 +143,23 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     console.log('✅ Store: Final filtered products', filtered.length);
     set({ filteredProducts: filtered });
   },
-}));
+
+  setScrollPosition: (position) => {
+    set({ scrollPosition: position });
+  },
+
+  setViewMode: (mode) => {
+    set({ viewMode: mode });
+  },
+}),
+{
+  name: 'product-store',
+  storage: createJSONStorage(() => localStorage),
+  partialize: (state) => ({
+    filters: state.filters,
+    searchQuery: state.searchQuery,
+    scrollPosition: state.scrollPosition,
+    viewMode: state.viewMode,
+  }),
+}
+));

@@ -146,7 +146,7 @@
             {
               "name": "ForzaBOND® A450",
               "url": "https://forzabuilt.com/product/a450/",
-              "image": "",
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "High-strength bonding for structural applications",
                 "Temperature resistant performance",
@@ -187,7 +187,7 @@
             {
               "name": "ForzaBOND® A465",
               "url": "https://forzabuilt.com/product/a465/",
-              "image": "",
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Industrial-grade adhesive strength",
                 "Chemical resistant formulation",
@@ -231,7 +231,7 @@
             {
               "name": "ForzaBOND® A729",
               "url": "https://forzabuilt.com/product/a729/",
-              "image": "",
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Bulk packaging for large projects",
                 "Cost-effective solution for high volume use",
@@ -272,7 +272,7 @@
             {
               "name": "ForzaBOND® C110",
               "url": "https://forzabuilt.com/product/c110/",
-              "image": "",
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Fast-drying solvent-based formula",
                 "High initial tack for immediate hold",
@@ -468,7 +468,7 @@
             {
               "name": "ForzaBOND® C805",
               "url": "https://forzabuilt.com/product/c805/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Fast cure time for quick turnaround",
                 "High bond strength for structural use",
@@ -509,7 +509,7 @@
             {
               "name": "ForzaBOND® C830",
               "url": "https://forzabuilt.com/product/c830/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Advanced polymer technology",
                 "Excellent peel and shear strength",
@@ -553,7 +553,7 @@
             {
               "name": "ForzaBOND® C835",
               "url": "https://forzabuilt.com/product/c835/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Industrial strength bonding",
                 "Shock and vibration resistant",
@@ -594,7 +594,7 @@
             {
               "name": "ForzaBOND® CA1001T",
               "url": "https://forzabuilt.com/product/ca1001t/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Toughened formula for impact resistance",
                 "Enhanced flexibility and durability",
@@ -724,7 +724,7 @@
             {
               "name": "ForzaBOND® H103",
               "url": "https://forzabuilt.com/product/h103/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Fast setting thermoplastic adhesive",
                 "Instant bonds upon cooling",
@@ -778,7 +778,7 @@
             {
               "name": "ForzaBOND® H117",
               "url": "https://forzabuilt.com/product/h117/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "High temperature hot melt performance",
                 "Excellent adhesion to various substrates",
@@ -827,7 +827,7 @@
             {
               "name": "ForzaBOND® H158",
               "url": "https://forzabuilt.com/product/h158/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Superior heat resistance properties",
                 "Low application temperature",
@@ -881,7 +881,7 @@
             {
               "name": "ForzaBOND® H163",
               "url": "https://forzabuilt.com/product/h163/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Flexible bond accommodates movement",
                 "Good low temperature performance",
@@ -930,7 +930,7 @@
             {
               "name": "ForzaBOND® H164",
               "url": "https://forzabuilt.com/product/h164/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "High performance hot melt adhesive",
                 "Excellent heat and humidity resistance",
@@ -984,7 +984,7 @@
             {
               "name": "ForzaBOND® H167",
               "url": "https://forzabuilt.com/product/h167/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Versatile bonding across materials",
                 "Fast setting for high throughput",
@@ -1006,7 +1006,7 @@
             {
               "name": "ForzaBOND® H176",
               "url": "https://forzabuilt.com/product/h176/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Advanced hot melt formulation",
                 "Excellent adhesion to plastics",
@@ -1250,7 +1250,7 @@
             {
               "name": "ForzaBOND® IC936",
               "url": "https://forzabuilt.com/product/ic936/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Bulk packaging for large applications",
                 "Cost-effective structural bonding",
@@ -1418,7 +1418,7 @@
             {
               "name": "ForzaBOND® IC951",
               "url": "https://forzabuilt.com/product/ic951/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Premium structural adhesive",
                 "Outstanding temperature performance",
@@ -1440,7 +1440,7 @@
             {
               "name": "ForzaBOND® IC952",
               "url": "https://forzabuilt.com/product/ic952/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Specialized methacrylate formulation",
                 "Fast room temperature cure",
@@ -1462,7 +1462,7 @@
             {
               "name": "ForzaBOND® IC955NF",
               "url": "https://forzabuilt.com/product/ic955nf/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [
                 "Non-flammable formulation for safety",
                 "High strength structural bonding",
@@ -1793,7 +1793,7 @@
             {
               "name": "ForzaBOND® S330",
               "url": "https://forzabuilt.com/product/s330/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "ms_polymer",
@@ -1808,7 +1808,7 @@
             {
               "name": "ForzaBOND® S360",
               "url": "https://forzabuilt.com/product/s360/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "ms_polymer",
@@ -1895,6 +1895,31 @@
               "sizing": [
                 "Industrial Tote"
               ]
+            },
+            {
+              "product_id": "TEST-001",
+              "name": "TEST-001",
+              "full_name": "Test Product for CRUD Demo - ForzaBOND®",
+              "description": "This is a test product created to demonstrate CRUD operations",
+              "url": "https://forzabuilt.com/test-product",
+              "brand": "forza_bond",
+              "industry": "industrial_industry",
+              "chemistry": "Test Chemistry",
+              "image": "/product-images/placeholder-product.svg",
+              "published": true,
+              "benefits": [
+                "Test Benefit 1",
+                "Test Benefit 2"
+              ],
+              "applications": [
+                "Test Application 1",
+                "Test Application 2"
+              ],
+              "technical": {
+                "test_spec": "test_value"
+              },
+              "benefits_count": 2,
+              "last_edited": ""
             }
           ]
         },
@@ -1971,7 +1996,7 @@
             {
               "name": "ForzaBOND® M-C283",
               "url": "https://forzabuilt.com/product/m-c283/",
-              "image": null,
+              "image": "/product-images/m-c280.png",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "solvent_based",
@@ -2220,7 +2245,7 @@
             {
               "name": "ForzaBOND® M-R478",
               "url": "https://forzabuilt.com/product/m-r478/",
-              "image": null,
+              "image": "/product-images/m-r420.png",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "modified_epoxy",
@@ -2459,7 +2484,7 @@
             {
               "name": "ForzaBOND® MC736",
               "url": "https://forzabuilt.com/product/mc736/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "methacrylate",
@@ -3329,7 +3354,7 @@
             {
               "name": "ForzaBOND® TC471",
               "url": "https://forzabuilt.com/product/tc471/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "methacrylate",
@@ -3694,7 +3719,7 @@
             {
               "name": "ForzaBOND® TAC850GR",
               "url": "https://forzabuilt.com/product/tac850gr/",
-              "image": null,
+              "image": "/product-images/tac850.png",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "composite_adhesive",
@@ -3709,7 +3734,7 @@
             {
               "name": "ForzaBOND® TAC850TN",
               "url": "https://forzabuilt.com/product/tac850tn/",
-              "image": null,
+              "image": "/product-images/tac850.png",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "composite_adhesive",
@@ -5023,7 +5048,7 @@
             {
               "name": "ForzaSEAL® OA28",
               "url": "https://forzabuilt.com/product/oa28/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -5038,7 +5063,7 @@
             {
               "name": "ForzaSEAL® OA29",
               "url": "https://forzabuilt.com/product/oa29/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -7777,7 +7802,7 @@
             {
               "name": "ForzaTAPE® T205",
               "url": "https://forzabuilt.com/product/t205/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -7858,7 +7883,7 @@
             {
               "name": "ForzaTAPE® T310",
               "url": "https://forzabuilt.com/product/t310/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -7873,7 +7898,7 @@
             {
               "name": "ForzaTAPE® T449",
               "url": "https://forzabuilt.com/product/t449/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -7955,7 +7980,7 @@
             {
               "name": "ForzaTAPE® T465",
               "url": "https://forzabuilt.com/product/t465/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -7987,7 +8012,7 @@
             {
               "name": "ForzaTAPE® T532",
               "url": "https://forzabuilt.com/product/t532/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -8002,7 +8027,7 @@
             {
               "name": "ForzaTAPE® T710",
               "url": "https://forzabuilt.com/product/t710/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -8017,7 +8042,7 @@
             {
               "name": "ForzaTAPE® ForzaTape",
               "url": "",
-              "image": "",
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",
@@ -8032,7 +8057,7 @@
             {
               "name": "ForzaTAPE® TA56",
               "url": "https://forzabuilt.com/product/ta56/",
-              "image": null,
+              "image": "/product-images/placeholder-product.svg",
               "benefits": [],
               "benefits_count": 0,
               "chemistry": "acrylic",

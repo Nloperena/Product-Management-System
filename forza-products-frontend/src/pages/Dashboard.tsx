@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { ApiService } from '../services/api';
 import type { Product } from '../types/product.ts';
 import { ProductCard } from '../components/product/ProductCard';
 import { FilterSidebar } from '../components/filters/FilterSidebar';
 import { DebugPanel } from '../components/debug/DebugPanel';
 import { useProductStore } from '../store/productStore';
-import { Filter, Grid, List, Package, Building, Wrench } from 'lucide-react';
+import { Filter, Grid, List, Package, Building, Wrench, Plus } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [, setSelectedProduct] = useState<Product | null>(null);
+  const navigate = useNavigate();
 
   const { 
     products, 
     filteredProducts, 
     searchQuery, 
+    viewMode,
+    scrollPosition,
     setProducts, 
     setSearchQuery,
+    setViewMode,
+    setScrollPosition,
     isLoading 
   } = useProductStore();
 
@@ -43,6 +47,7 @@ export const Dashboard: React.FC = () => {
     },
   });
 
+
   useEffect(() => {
     console.log('🔄 Dashboard: Query state changed', {
       isQueryLoading,
@@ -60,6 +65,52 @@ export const Dashboard: React.FC = () => {
       console.error('❌ Dashboard: API Error', error);
     }
   }, [productsData, setProducts, isQueryLoading, error]);
+
+  // Restore scroll position on mount
+  useEffect(() => {
+    if (scrollPosition > 0) {
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [scrollPosition]);
+
+  // Save scroll position on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const position = window.scrollY;
+      setScrollPosition(position);
+    };
+
+    const debouncedHandleScroll = (func: () => void, delay: number) => {
+      let timeoutId: NodeJS.Timeout;
+      return () => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(func, delay);
+      };
+    };
+
+    const debouncedScroll = debouncedHandleScroll(handleScroll, 100);
+    window.addEventListener('scroll', debouncedScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', debouncedScroll);
+    };
+  }, [setScrollPosition]);
+
+  // Navigation Handlers
+  const handleCreateProduct = () => {
+    navigate('/product/new');
+  };
+
+  const handleViewProduct = (product: Product) => {
+    navigate(`/product/${product.product_id}`);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    navigate(`/product/${product.product_id}/edit`);
+  };
 
   // Calculate stats
   const stats = {
@@ -104,63 +155,61 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-forza-blue">
-                Forza Products
-              </h1>
-            </div>
-
-            {/* Search Bar */}
-            <div className="flex-1 max-w-lg mx-8">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-forza-blue focus:border-forza-blue"
-                />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Package className="h-5 w-5 text-gray-400" />
-                </div>
+    <>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Search and Controls */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          {/* Search Bar */}
+          <div className="flex-1 max-w-lg">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-forza-blue focus:border-forza-blue"
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Package className="h-5 w-5 text-gray-400" />
               </div>
             </div>
+          </div>
 
-            {/* View Controls */}
-            <div className="flex items-center space-x-2">
+          {/* Controls */}
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={handleCreateProduct}
+              className="flex items-center space-x-2 px-4 py-2 bg-forza-blue text-white rounded-lg hover:bg-forza-blue-dark transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Add Product</span>
+            </button>
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 lg:hidden"
+            >
+              <Filter className="h-5 w-5" />
+            </button>
+            <div className="flex border border-gray-300 rounded-lg">
               <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 lg:hidden"
+                onClick={() => setViewMode('grid')}
+                className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-forza-blue text-white' : 'text-gray-500 hover:text-gray-700'}`}
               >
-                <Filter className="h-5 w-5" />
+                <Grid className="h-4 w-4" />
               </button>
-              <div className="flex border border-gray-300 rounded-lg">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 ${viewMode === 'grid' ? 'bg-forza-blue text-white' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                  <Grid className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 ${viewMode === 'list' ? 'bg-forza-blue text-white' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                  <List className="h-4 w-4" />
-                </button>
-              </div>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-forza-blue text-white' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                <List className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
+      <div className="flex gap-8">
           {/* Main Content */}
           <div className="flex-1">
             {/* Stats Overview */}
@@ -240,7 +289,8 @@ export const Dashboard: React.FC = () => {
                     <ProductCard
                       key={product.product_id || product.id || Math.random()}
                       product={product}
-                      onView={setSelectedProduct}
+                      onView={handleViewProduct}
+                      onEdit={handleEditProduct}
                     />
                   ))}
                 </div>
@@ -263,13 +313,13 @@ export const Dashboard: React.FC = () => {
             <FilterSidebar isOpen={true} onClose={() => {}} />
           </div>
         </div>
-      </div>
 
-      {/* Mobile Filter Sidebar */}
-      <FilterSidebar isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
-      
-      {/* Debug Panel */}
-      <DebugPanel />
-    </div>
+        {/* Mobile Filter Sidebar */}
+        <FilterSidebar isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+        
+        {/* Debug Panel */}
+        <DebugPanel />
+      </div>
+    </>
   );
 };

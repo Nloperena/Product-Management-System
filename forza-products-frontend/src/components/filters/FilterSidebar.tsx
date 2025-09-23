@@ -8,7 +8,7 @@ interface FilterSidebarProps {
 }
 
 export const FilterSidebar: React.FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
-  const { filters, setFilters, products } = useProductStore();
+  const { filters, setFilters, products, filteredProducts } = useProductStore();
 
   // Get unique values for filter options
   const brands = [...new Set(products.map(p => p.brand))];
@@ -35,10 +35,11 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({ isOpen, onClose })
       industry: '',
       chemistry: '',
       applications: [],
+      published: 'all',
     });
   };
 
-  const hasActiveFilters = filters.brand || filters.industry || filters.chemistry || filters.applications.length > 0;
+  const hasActiveFilters = filters.brand || filters.industry || filters.chemistry || filters.applications.length > 0 || filters.published !== 'all';
 
   return (
     <>
@@ -136,10 +137,26 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({ isOpen, onClose })
               </select>
             </div>
 
+            {/* Published Status Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Publication Status
+              </label>
+              <select
+                value={filters.published}
+                onChange={(e) => setFilters({ published: e.target.value as 'all' | 'published' | 'unpublished' })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-forza-blue focus:border-transparent"
+              >
+                <option value="all">All Products</option>
+                <option value="published">Published Only</option>
+                <option value="unpublished">Unpublished Only</option>
+              </select>
+            </div>
+
             {/* Results Count */}
             <div className="pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
-                Showing {products.length} products
+                Showing {filteredProducts.length} of {products.length} products
               </p>
             </div>
           </div>
