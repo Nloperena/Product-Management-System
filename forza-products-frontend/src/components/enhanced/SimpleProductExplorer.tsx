@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useProductStore } from '../../store/productStore';
-import { Search, Filter, Grid, List, Download } from 'lucide-react';
+import { Search, Grid, List, Download } from 'lucide-react';
 import type { Product } from '../../types/product';
 import { ApiService } from '../../services/api';
 import { exportToCSV, generateExportFilename } from '../../utils/csvExport';

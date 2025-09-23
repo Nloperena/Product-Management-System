@@ -2,12 +2,5 @@
   "name": "forza-products-management-system",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "build": "cd forza-products-frontend && npm install && npm run build",
-    "dev": "cd forza-products-frontend && npm run dev",
-    "start": "cd forza-products-frontend && npm run preview"
-  },
-  "workspaces": [
-    "forza-products-frontend"
-  ]
+  "description": "Forza Products Management System with React frontend and Flask backend"
 }

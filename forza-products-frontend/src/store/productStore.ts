@@ -112,7 +112,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     // Apply applications filter
     if (filters.applications.length > 0) {
       filtered = filtered.filter(product =>
-        product.applications?.some(app =>
+        Array.isArray(product.applications) && product.applications.some((app: string) =>
           filters.applications.some(filterApp =>
             app.toLowerCase().includes(filterApp.toLowerCase())
           )

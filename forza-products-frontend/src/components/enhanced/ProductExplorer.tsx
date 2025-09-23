@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useProductStore } from '../../store/productStore';
-import { Search, Filter, Grid, List, BarChart3, Target, Layers, Zap } from 'lucide-react';
+import { Search, Grid, List, BarChart3, Target, Layers, Zap } from 'lucide-react';
 import type { Product } from '../../types/product';
 
 interface ProductExplorerProps {
@@ -20,7 +20,7 @@ export const ProductExplorer: React.FC<ProductExplorerProps> = ({ onProductSelec
   const getSmartSuggestions = () => {
     if (!searchQuery) return [];
     
-    const suggestions = [];
+    const suggestions: Array<{type: string, value: string, count: number}> = [];
     const query = searchQuery.toLowerCase();
     
     // Chemistry suggestions

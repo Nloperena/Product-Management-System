@@ -7,7 +7,7 @@ import { ProductDetailModal } from '../components/enhanced/ProductDetailModal';
 import { ProductComparison } from '../components/enhanced/ProductComparison';
 import { DebugPanel } from '../components/debug/DebugPanel';
 import { useProductStore } from '../store/productStore';
-import { TrendingUp, Users, Package, Building, Zap, Target } from 'lucide-react';
+import { TrendingUp, Package, Building, Zap, Target } from 'lucide-react';
 
 export const EnhancedDashboard: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -76,11 +76,11 @@ export const EnhancedDashboard: React.FC = () => {
     setIsDetailModalOpen(true);
   };
 
-  const handleCompareProducts = (productIds: string[]) => {
-    const productsToCompare = products.filter(p => productIds.includes(p.product_id));
-    setComparisonProducts(productsToCompare);
-    setIsComparisonOpen(true);
-  };
+  // const handleCompareProducts = (productIds: string[]) => {
+  //   const productsToCompare = products.filter(p => productIds.includes(p.product_id));
+  //   setComparisonProducts(productsToCompare);
+  //   setIsComparisonOpen(true);
+  // };
 
   const handleRemoveFromComparison = (productId: string) => {
     setComparisonProducts(prev => prev.filter(p => p.product_id !== productId));
