@@ -3,8 +3,6 @@ node_modules/
 */node_modules/
 
 # Build outputs (except the target one)
-forza-products-frontend/
-forza-products-frontend3/
 app.py
 requirements.txt
 product-images/
