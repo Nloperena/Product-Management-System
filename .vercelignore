@@ -1,7 +1,3 @@
-# Dependencies
-node_modules/
-*/node_modules/
-
 # Build outputs (except the target one)
 app.py
 requirements.txt
